@@ -1,12 +1,18 @@
+"use client"
+
 import { Suspense } from "react"
+import { useTicketStore } from "@/store/useTicketStore"
 import styles from "./TicketsPage.module.scss"
 
 import Button from "@/components/ui/Button/Button"
 import TicketSkeleton from "@/components/shared/TicketSkeleton/Skeleton"
 import TicketFilters from "@/components/pages/TicketsList/TicketFilter/TicketsFilter"
 import TicketList from "@/components/pages/TicketsList/TicketsList"
+import TicketModal from "@/components/pages/TicketModal/TicketModal"
 
 export default function TicketsPage() {
+  const setIsModalOpen = useTicketStore((state) => state.setIsModalOpen)
+
   return (
     <main className={styles.wrapper}>
       <div className="container">
@@ -19,7 +25,9 @@ export default function TicketsPage() {
           </div>
 
           <div className={styles.actions}>
-            <Button variant="primary">Abrir Novo Chamado</Button>
+            <Button variant="primary" onClick={() => setIsModalOpen(true)}>
+              Abrir Novo Chamado
+            </Button>
           </div>
         </section>
 
@@ -29,6 +37,8 @@ export default function TicketsPage() {
           <TicketList />
         </Suspense>
       </div>
+
+      <TicketModal />
     </main>
   )
 }

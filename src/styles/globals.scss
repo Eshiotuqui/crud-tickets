@@ -114,3 +114,38 @@ select,
 textarea {
   font-family: inherit;
 }
+
+/* --- Custom Scrollbar --- */
+
+/* Navegadores baseados em Webkit (Chrome, Safari, Edge, Opera) */
+::-webkit-scrollbar {
+  width: 8px; /* largura da scrollbar vertical */
+  height: 8px; /* altura da scrollbar horizontal */
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface-muted);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: var(--radius-full);
+  /* Cria um efeito de borda para a scrollbar não encostar nas laterais */
+  border: 2px solid var(--surface-muted);
+
+  &:hover {
+    background: var(--primary-hover);
+  }
+}
+
+/* Suporte para Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--surface-muted);
+}
+
+/* Estilo para áreas de scroll dentro de componentes (como o form do Modal) */
+.form {
+  scrollbar-gutter: stable;
+}

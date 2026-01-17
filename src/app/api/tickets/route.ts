@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server"
 import { tickets } from "@/store/mockData"
+import { ticketSchema } from "@/schemas/ticketSchema"
+import type { Ticket, TicketStatus } from "@/types/ticket"
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
@@ -30,15 +32,41 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const body = await request.json()
+  await delay(1000)
 
-  const newTicket = {
-    id: Date.now(),
-    status: "open",
-    createdAt: new Date().toISOString(),
-    ...body,
+  try {
+    const body = await request.json()
+    const validation = ticketSchema.safeParse(body)
+
+    if (!validation.success) {
+      return NextResponse.json({ errors: validation.error.flatten().fieldErrors }, { status: 400 })
+    }
+
+    if (validation.data.category === "billing") {
+      const isPublicDomain = /@(gmail|hotmail|outlook|yahoo|live)\./i.test(validation.data.email)
+      if (isPublicDomain) {
+        return NextResponse.json(
+          {
+            errors: {
+              email: ["E-mails @gmail, @hotmail, etc., não são permitidos para financeiro."],
+            },
+          },
+          { status: 400 }
+        )
+      }
+    }
+
+    const newTicket: Ticket = {
+      id: Date.now(),
+      status: "open" as TicketStatus,
+      createdAt: new Date().toISOString(),
+      ...validation.data,
+    }
+
+    tickets.unshift(newTicket)
+
+    return NextResponse.json(newTicket, { status: 201 })
+  } catch (error) {
+    return NextResponse.json({ error: "Falha ao processar requisição" }, { status: 500 })
   }
-
-  tickets.unshift(newTicket)
-  return NextResponse.json(newTicket, { status: 201 })
 }
