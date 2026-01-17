@@ -27,11 +27,9 @@ export default function TicketFilters() {
     <section className={styles.filterBar} aria-label="Filtros de busca">
       <form className={styles.filterForm} onSubmit={(e) => e.preventDefault()}>
         <div className={styles.searchGroup}>
-          <label htmlFor="search-input" className="sr-only">
-            Buscar tickets
-          </label>
           <Input
             id="search-input"
+            label="Buscar tickets"
             type="search"
             placeholder="Buscar pelo título..."
             value={searchQuery}
@@ -40,11 +38,9 @@ export default function TicketFilters() {
         </div>
 
         <div className={styles.selectGroup}>
-          <label htmlFor="status-filter" className="sr-only">
-            Filtrar por status
-          </label>
           <Select
             id="status-filter"
+            label="Filtrar por status"
             options={statusOptions}
             value={filterStatus || "all"}
             onChange={(e) => setFilterStatus(e.target.value)}
@@ -52,11 +48,9 @@ export default function TicketFilters() {
         </div>
 
         <div className={styles.selectGroup}>
-          <label htmlFor="sort-filter" className="sr-only">
-            Ordenar por
-          </label>
           <Select
             id="sort-filter"
+            label="Ordenar por"
             options={sortOptions}
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
