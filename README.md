@@ -114,4 +114,12 @@ Utilizamos o componente `<Suspense>` com um `TicketSkeleton` para otimizar a exp
 
 ---
 
+## vídeo de demonstração
+
+
+
+https://github.com/user-attachments/assets/4bbf8f70-2a04-40d0-ba3a-2552c195473e
+
+
+
 Desenvolvido por [Enzo Shiotuqui].
