@@ -4,6 +4,27 @@ O **TicketFlow** é uma solução moderna para centralização e controle de tic
 
 Este sistema consiste em um **CRUD completo** (Create, Read, Update, Delete) que simula o dia a dia de uma equipe de suporte, permitindo desde a abertura de um chamado, edição de prioridades, até a visualização detalhada e o encerramento definitivo através de uma interface limpa e responsiva.
 
+## Arquitetura e Estrutura de Pastas
+
+O projeto segue uma organização modular baseada em responsabilidades, garantindo separação clara entre lógica de servidor e cliente:
+
+```text
+src/
+├── app/            # Rotas, layouts e Server Components (Next.js App Router)
+├── assets/         # Recursos estáticos (imagens, ícones locais)
+├── components/     # Componentes React divididos por escopo:
+│   ├── pages/      # Componentes de estrutura de páginas específicas
+│   ├── providers/  # Provedores de contexto (QueryClient, Auth, etc)
+│   ├── shared/     # Componentes de negócio reutilizáveis
+│   └── ui/         # Componentes de interface base (design system)
+├── hooks/          # Hooks customizados para lógica compartilhada
+├── lib/            # Configurações de libs e utilitários (API, tradução)
+├── schemas/        # Validações de dados com Zod (ex: ticketSchema.ts)
+├── store/          # Gerenciamento de estado global com Zustand
+├── styles/         # Estilização global e mixins SASS
+└── types/          # Definições de interfaces TypeScript
+```
+
 ---
 
 ##  Funcionalidades Principais
@@ -113,6 +134,18 @@ Utilizamos o componente `<Suspense>` com um `TicketSkeleton` para otimizar a exp
 5.  **Interação:** O utilizador filtra ou pagina os resultados localmente via `useMemo`, sem necessidade de novas recargas de página.
 
 ---
+
+###  Melhorias Futuras
+
+Com mais tempo de desenvolvimento, os seguintes tópicos seriam priorizados:
+
+Testes Automatizados: Cobertura de testes unitários nos Hooks e testes E2E (Cypress) no fluxo de CRUD.
+
+Internacionalização (i18n): Suporte completo a múltiplos idiomas através da estrutura em lib/ticket-translate.ts.
+
+Modo Escuro (Dark Mode): Implementar suporte a temas utilizando variáveis SASS ou Tailwind, respeitando a preferência do sistema do usuário.
+
+Drag and Drop (Kanban): Adicionar uma visualização de quadro (Kanban) onde o status do ticket possa ser alterado arrastando o card, utilizando bibliotecas como dnd-kit.
 
 ## vídeo de demonstração
 
