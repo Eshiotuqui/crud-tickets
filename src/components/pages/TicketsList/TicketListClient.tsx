@@ -7,13 +7,17 @@ import { useTicketStore } from "@/store/useTicketStore"
 import { useDeleteTicket } from "@/hooks/useDeleteTicket"
 import { Pagination } from "@/components/ui/Pagination/Pagination"
 import { priorityTranslations, statusTranslations } from "@/lib/ticket-translate"
-import { Ticket } from "@/types/ticket"
+import { Ticket, PaginatedResponse } from "@/types/ticket"
 import Popover from "@/components/ui/Popover/Popover"
 import ConfirmModal from "@/components/ui/Modal/ConfirmModal/ConfirmModal"
 import styles from "./TicketsList.module.scss"
 
-export default function TicketList() {
-  const { data: response } = useTickets()
+interface TicketListProps {
+  initialData: PaginatedResponse<Ticket>
+}
+
+export default function TicketList({ initialData }: TicketListProps) {
+  const { data: response } = useTickets(initialData)
   const { searchQuery, filterStatus, sortBy } = useTicketStore()
   const { mutate: deleteTicket, isPending: isDeleting } = useDeleteTicket()
 
@@ -26,8 +30,8 @@ export default function TicketList() {
   }, [searchQuery, filterStatus, sortBy])
 
   const filtered = useMemo(() => {
-    if (!response?.data) return []
-    let result = response.data.filter((t: Ticket) => {
+    const sourceData = response?.data || []
+    let result = sourceData.filter((t: Ticket) => {
       const matchesSearch = t.title.toLowerCase().includes(searchQuery.toLowerCase())
       const matchesStatus = filterStatus === "all" || !filterStatus || t.status === filterStatus
       return matchesSearch && matchesStatus
@@ -40,17 +44,19 @@ export default function TicketList() {
         return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       if (sortBy.startsWith("priority")) {
         const priorityMap: Record<string, number> = { high: 3, medium: 2, low: 1 }
-        const valA = priorityMap[a.priority] || 0
-        const valB = priorityMap[b.priority] || 0
-        return sortBy === "priority_high" ? valB - valA : valA - valB
+        return sortBy === "priority_high"
+          ? (priorityMap[b.priority] || 0) - (priorityMap[a.priority] || 0)
+          : (priorityMap[a.priority] || 0) - (priorityMap[b.priority] || 0)
       }
       return 0
     })
-  }, [response?.data, searchQuery, filterStatus, sortBy])
+  }, [response, searchQuery, filterStatus, sortBy])
 
   const totalPages = Math.ceil(filtered.length / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const paginatedItems = filtered.slice(startIndex, startIndex + itemsPerPage)
+  const paginatedItems = filtered.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
 
   useEffect(() => {
     if (currentPage > 1 && paginatedItems.length === 0 && filtered.length > 0) {
@@ -61,7 +67,7 @@ export default function TicketList() {
   if (filtered.length === 0) {
     return (
       <section className={styles.empty}>
-        <p>Nenhum ticket encontrado para os filtros selecionados.</p>
+        <p>Nenhum ticket encontrado.</p>
       </section>
     )
   }
@@ -87,8 +93,7 @@ export default function TicketList() {
                 }
               >
                 <button className={styles.deleteOption} onClick={() => setTicketToDelete(ticket)}>
-                  <Trash2 size={16} color="var(--danger)" />
-                  <span>Excluir</span>
+                  <Trash2 size={16} /> <span>Excluir</span>
                 </button>
               </Popover>
             </header>
@@ -110,13 +115,15 @@ export default function TicketList() {
       <ConfirmModal
         isOpen={!!ticketToDelete}
         title="Excluir Chamado"
-        description={`Tem certeza que deseja remover "${ticketToDelete?.title}"? Esta ação não pode ser desfeita.`}
+        description={`Remover "${ticketToDelete?.title}"?`}
         onClose={() => setTicketToDelete(null)}
-        onConfirm={() =>
-          deleteTicket(ticketToDelete!.id, {
-            onSuccess: () => setTicketToDelete(null),
-          })
-        }
+        onConfirm={() => {
+          if (ticketToDelete) {
+            deleteTicket(ticketToDelete.id, {
+              onSuccess: () => setTicketToDelete(null),
+            })
+          }
+        }}
         isLoading={isDeleting}
       />
 
