@@ -1,12 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { TicketFormData } from "@/schemas/ticketSchema"
+import { apiPath } from "@/lib/api-config"
 
 export const useCreateTicket = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (data: TicketFormData) => {
-      const response = await fetch("/api/tickets", {
+      const response = await fetch(apiPath("/api/tickets"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

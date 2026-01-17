@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useToastStore } from "@/store/useToastStore"
+import { apiPath } from "@/lib/api-config"
 
 export const useDeleteTicket = () => {
   const queryClient = useQueryClient()
@@ -7,7 +8,9 @@ export const useDeleteTicket = () => {
 
   return useMutation({
     mutationFn: async (id: number) => {
-      const response = await fetch(`/api/tickets/${id}`, { method: "DELETE" })
+      const response = await fetch(apiPath(`/api/tickets/${id}`), {
+        method: "DELETE",
+      })
       if (!response.ok) throw new Error()
       return response.json()
     },
