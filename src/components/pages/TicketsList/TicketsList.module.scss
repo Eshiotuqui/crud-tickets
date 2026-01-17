@@ -1,20 +1,14 @@
 $tablet: 992px;
 $mobile: 600px;
 
-.ticketsSection {
-  width: 100%;
-}
-
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--spacing-md);
   margin-top: var(--spacing-xl);
-
   @media (max-width: #{$tablet}) {
     grid-template-columns: repeat(2, 1fr);
   }
-
   @media (max-width: #{$mobile}) {
     grid-template-columns: 1fr;
   }
@@ -25,11 +19,10 @@ $mobile: 600px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: var(--spacing-md);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: var(--transition-smooth);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: var(--shadow-sm);
   min-height: 180px;
 
   &:hover {
@@ -42,8 +35,38 @@ $mobile: 600px;
 .cardHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: var(--spacing-sm);
+}
+
+.headerLeft {
+  display: flex;
+  gap: var(--spacing-xs);
+  align-items: center;
+}
+
+.actionBtn {
+  color: var(--text-muted);
+  padding: 4px;
+  border-radius: var(--radius-xs);
+  &:hover {
+    background: var(--surface-muted);
+    color: var(--text-main);
+  }
+}
+
+.deleteOption {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--danger);
+  font-weight: 600;
+  font-size: 0.875rem;
+  &:hover {
+    background: var(--danger-bg);
+  }
 }
 
 .categoryBadge {
@@ -54,7 +77,6 @@ $mobile: 600px;
   background: var(--primary-light);
   padding: 4px 8px;
   border-radius: var(--radius-sm);
-  letter-spacing: 0.05em;
 }
 
 .priority {
@@ -63,7 +85,6 @@ $mobile: 600px;
   text-transform: uppercase;
   padding: 2px 6px;
   border-radius: 4px;
-
   &[data-priority="high"] {
     color: var(--danger);
     background: var(--danger-bg);
@@ -88,7 +109,6 @@ $mobile: 600px;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
   flex-grow: 1;
 }
 
@@ -106,7 +126,6 @@ $mobile: 600px;
   padding: 4px 10px;
   border-radius: var(--radius-full);
   color: var(--white);
-
   &[data-status="open"] {
     background: var(--status-open);
   }
@@ -133,11 +152,8 @@ $mobile: 600px;
   background: var(--primary-light);
   border-radius: var(--radius-lg);
   border: 2px dashed rgba(255, 107, 0, 0.2);
-  width: 100%;
-
   p {
     color: var(--primary);
     font-weight: 600;
-    font-size: 1.1rem;
   }
 }

@@ -8,7 +8,8 @@ import Button from "@/components/ui/Button/Button"
 import TicketSkeleton from "@/components/shared/TicketSkeleton/Skeleton"
 import TicketFilters from "@/components/pages/TicketsList/TicketFilter/TicketsFilter"
 import TicketList from "@/components/pages/TicketsList/TicketsList"
-import TicketModal from "@/components/pages/TicketModal/TicketModal"
+
+import TicketCreateModal from "@/components/ui/Modal/TicketCreateModal/TicketCreateModal"
 
 export default function TicketsPage() {
   const setIsModalOpen = useTicketStore((state) => state.setIsModalOpen)
@@ -38,7 +39,7 @@ export default function TicketsPage() {
         </Suspense>
       </div>
 
-      <TicketModal />
+      <TicketCreateModal />
     </main>
   )
 }

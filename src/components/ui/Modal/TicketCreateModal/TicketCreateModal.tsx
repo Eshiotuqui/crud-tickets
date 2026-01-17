@@ -14,9 +14,9 @@ import Input from "@/components/ui/Input/Input"
 import Select from "@/components/ui/Select/Select"
 import TextArea from "@/components/ui/Textarea/Textarea"
 
-import styles from "./TicketModal.module.scss"
+import styles from "./TicketCreateModal.module.scss"
 
-export default function TicketModal() {
+export default function TicketCreateModal() {
   const { isModalOpen, setIsModalOpen } = useTicketStore()
   const { mutate, isPending } = useCreateTicket()
   const { addToast } = useToastStore()
