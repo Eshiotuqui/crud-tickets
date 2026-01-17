@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server"
 import { tickets } from "@/store/mockData"
 import { ticketSchema } from "@/schemas/ticketSchema"
-import type { Ticket, TicketStatus } from "@/types/ticket"
+import type { Ticket } from "@/types/ticket"
+
+export const dynamic = "force-dynamic"
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
@@ -48,7 +50,7 @@ export async function POST(request: Request) {
         return NextResponse.json(
           {
             errors: {
-              email: ["E-mails @gmail, @hotmail, etc., não são permitidos para financeiro."],
+              email: ["E-mails públicos não são permitidos para financeiro."],
             },
           },
           { status: 400 }
@@ -57,10 +59,9 @@ export async function POST(request: Request) {
     }
 
     const newTicket: Ticket = {
-      id: Date.now(),
-      status: "open" as TicketStatus,
-      createdAt: new Date().toISOString(),
       ...validation.data,
+      id: Date.now(),
+      createdAt: new Date().toISOString(),
     }
 
     tickets.unshift(newTicket)
