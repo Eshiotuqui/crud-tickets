@@ -31,7 +31,7 @@ Mesmo sendo uma área de gestão, a renderização no servidor é vital para o S
 
 ---
 
-## 🛠️ Divisão de Responsabilidades
+##  Divisão de Responsabilidades
 
 | Componente         | Camada | Função                                                           |
 | :----------------- | :----- | :--------------------------------------------------------------- |
@@ -41,7 +41,7 @@ Mesmo sendo uma área de gestão, a renderização no servidor é vital para o S
 
 ---
 
-## 📋 Como funciona o Fluxo de Dados
+##  Como funciona o Fluxo de Dados
 
 1.  **Requisição:** O utilizador acede à rota de tickets.
 2.  **Renderização Inicial:** O servidor envia o HTML com o Skeleton.
