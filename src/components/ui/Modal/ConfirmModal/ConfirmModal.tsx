@@ -1,6 +1,7 @@
 "use client"
 
 import Button from "@/components/ui/Button/Button"
+import Modal from ".."
 import styles from "./ConfirmModal.module.scss"
 
 interface ConfirmModalProps {
@@ -20,22 +21,20 @@ export default function ConfirmModal({
   onConfirm,
   isLoading,
 }: ConfirmModalProps) {
-  if (!isOpen) return null
-
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <h3>{title}</h3>
-        <p>{description}</p>
+    <Modal isOpen={isOpen} onClose={onClose} title={title}>
+      <div className={styles.container}>
+        <p className={styles.description}>{description}</p>
+
         <div className={styles.actions}>
           <Button variant="ghost" onClick={onClose} disabled={isLoading}>
             Cancelar
           </Button>
           <Button variant="primary" onClick={onConfirm} isLoading={isLoading}>
-            Confirmar
+            Confirmar Exclusão
           </Button>
         </div>
       </div>
-    </div>
+    </Modal>
   )
 }

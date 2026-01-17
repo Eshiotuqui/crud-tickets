@@ -3,8 +3,8 @@ import styles from "./TicketsPage.module.scss"
 import TicketSkeleton from "@/components/shared/TicketSkeleton/Skeleton"
 import TicketFilters from "@/components/pages/TicketsList/TicketFilter/TicketsFilter"
 import TicketListServer from "@/components/pages/TicketsList/TicketListServer"
-import TicketCreateModal from "@/components/ui/Modal/TicketCreateModal/TicketCreateModal"
 import TicketHeaderActions from "@/components/pages/TicketsList/TicketHeader/TicketHeader"
+import TicketModals from "@/components/shared/TicketModals/TicketModals"
 
 export default function TicketsPage() {
   return (
@@ -29,7 +29,7 @@ export default function TicketsPage() {
         </Suspense>
       </div>
 
-      <TicketCreateModal />
+      <TicketModals />
     </main>
   )
 }

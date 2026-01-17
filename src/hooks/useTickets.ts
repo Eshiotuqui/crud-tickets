@@ -10,6 +10,7 @@ export const useTickets = (initialData?: PaginatedResponse<Ticket>) => {
       return response.json()
     },
     initialData,
-    staleTime: 1000 * 60,
+    refetchOnMount: true,
+    staleTime: 0,
   })
 }

@@ -9,7 +9,6 @@ const delay = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
 export async function GET(request: Request) {
   await delay(800)
-
   try {
     const { searchParams } = new URL(request.url)
     const page = Number(searchParams.get("page")) || 1
@@ -18,16 +17,23 @@ export async function GET(request: Request) {
     const totalItems = tickets.length
     const totalPages = Math.ceil(totalItems / limit)
 
-    return NextResponse.json({
-      data: tickets,
-      meta: {
-        totalItems,
-        itemCount: tickets.length,
-        itemsPerPage: limit,
-        totalPages,
-        currentPage: page,
+    return NextResponse.json(
+      {
+        data: [...tickets],
+        meta: {
+          totalItems,
+          itemCount: tickets.length,
+          itemsPerPage: limit,
+          totalPages,
+          currentPage: page,
+        },
       },
-    })
+      {
+        headers: {
+          "Cache-Control": "no-store, max-age=0",
+        },
+      }
+    )
   } catch (error) {
     return NextResponse.json({ error: "Erro interno" }, { status: 500 })
   }
