@@ -1,0 +1,38 @@
+$tablet: 768px;
+
+.filterBar {
+  background-color: var(--surface);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin-bottom: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+
+  @media (max-width: #{$tablet}) {
+    padding: var(--spacing-md);
+  }
+}
+
+.filterForm {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 100%;
+
+  .selectGroup {
+    flex: 1;
+    min-width: 150px;
+  }
+
+  @media (max-width: #{$tablet}) {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+
+    .searchGroup,
+    .selectGroup {
+      width: 100%;
+      flex: none;
+      min-width: unset;
+    }
+  }
+}
