@@ -1,0 +1,143 @@
+$tablet: 992px;
+$mobile: 600px;
+
+.ticketsSection {
+  width: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-xl);
+
+  @media (max-width: #{$tablet}) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: #{$mobile}) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+  min-height: 180px;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary);
+  }
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.categoryBadge {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.05em;
+}
+
+.priority {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+
+  &[data-priority="high"] {
+    color: var(--danger);
+    background: var(--danger-bg);
+  }
+  &[data-priority="medium"] {
+    color: var(--warning);
+    background: var(--warning-bg);
+  }
+  &[data-priority="low"] {
+    color: var(--success);
+    background: var(--success-bg);
+  }
+}
+
+.cardTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.3;
+  margin-bottom: var(--spacing-md);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--border-light);
+}
+
+.statusBadge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  color: var(--white);
+
+  &[data-status="open"] {
+    background: var(--status-open);
+  }
+  &[data-status="in_progress"] {
+    background: var(--status-progress);
+  }
+  &[data-status="resolved"] {
+    background: var(--status-resolved);
+  }
+  &[data-status="closed"] {
+    background: var(--status-closed);
+  }
+}
+
+.date {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.empty {
+  text-align: center;
+  padding: var(--spacing-huge) 0;
+  background: var(--primary-light);
+  border-radius: var(--radius-lg);
+  border: 2px dashed rgba(255, 107, 0, 0.2);
+  width: 100%;
+
+  p {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 1.1rem;
+  }
+}

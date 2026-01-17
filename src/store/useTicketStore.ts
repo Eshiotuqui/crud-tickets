@@ -1,15 +1,23 @@
 import { create } from "zustand"
 
 interface TicketUIState {
-  filterStatus: string | null
-  setFilterStatus: (status: string | null) => void
-  selectedTicketId: number | null
-  setSelectedTicketId: (id: number | null) => void
+  filterStatus: string
+  searchQuery: string
+  sortBy: string
+  isModalOpen: boolean
+  setFilterStatus: (status: string) => void
+  setSearchQuery: (query: string) => void
+  setSortBy: (sort: string) => void
+  setIsModalOpen: (open: boolean) => void
 }
 
 export const useTicketStore = create<TicketUIState>((set) => ({
-  filterStatus: null,
-  selectedTicketId: null,
+  filterStatus: "all",
+  searchQuery: "",
+  sortBy: "newest",
+  isModalOpen: false,
   setFilterStatus: (status) => set({ filterStatus: status }),
-  setSelectedTicketId: (id) => set({ selectedTicketId: id }),
+  setSearchQuery: (query) => set({ searchQuery: query }),
+  setSortBy: (sort) => set({ sortBy: sort }),
+  setIsModalOpen: (open) => set({ isModalOpen: open }),
 }))

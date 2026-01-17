@@ -5,23 +5,79 @@
 }
 
 :root {
+  /* Brand Colors */
   --primary: #ff6b00;
   --primary-hover: #e66000;
   --primary-light: #fff5ed;
+  --primary-glow: rgba(255, 107, 0, 0.1);
+  --primary-glow-hover: rgba(255, 107, 0, 0.25);
 
+  /* Base Colors */
   --white: #ffffff;
-  --background: #fcfcfc;
+  --background: #fcfcfd;
   --surface: #ffffff;
+  --surface-muted: #fafbfc;
 
+  /* Text Colors */
   --text-main: #1a1a1a;
-  --text-muted: #666666;
-  --border: #e2e2e2;
+  --text-muted: #64748b;
+  --text-placeholder: #94a3b8;
 
-  --gap-sm: 0.5rem;
-  --gap-md: 1rem;
-  --gap-lg: 2rem;
+  /* Borders */
+  --border: #eef0f2;
+  --border-input: #e2e8f0;
+  --border-light: #f8fafb;
+  --border-ultra-light: #f1f3f5;
 
-  --radius: 8px;
+  /* Spacing System */
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 20px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+  --spacing-3xl: 40px;
+  --spacing-4xl: 48px;
+  --spacing-huge: 80px;
+
+  /* Layout */
+  --container-max: 1200px;
+  --header-height: 70px;
+  --z-header: 100;
+
+  /* Border Radius */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-full: 30px;
+
+  /* Shadows & Animations */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.02);
+  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.08);
+  --transition-fast: 0.2s ease;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Status Colors */
+  --status-open: var(--primary);
+  --status-progress: #3b82f6;
+  --status-resolved: #10b981;
+  --status-closed: #64748b;
+
+  /* Semantic Colors */
+  --danger: #dc2626;
+  --danger-bg: #fee2e2;
+  --warning: #d97706;
+  --warning-bg: #fef3c7;
+  --success: #059669;
+  --success-bg: #ecfdf5;
+
+  /* Skeleton / Shimmer */
+  --shimmer-base: #f0f1f2;
+  --shimmer-highlight: #f8f9fa;
+  --shimmer-speed: 1.5s;
 }
 
 body {
@@ -30,15 +86,31 @@ body {
   font-family: var(--font-geist-sans), sans-serif;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  line-height: 1.5;
+}
+
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--spacing-xl);
 }
 
 a {
   color: inherit;
   text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
 button {
   cursor: pointer;
   border: none;
+  background: none;
+  font-family: inherit;
+  transition: var(--transition-smooth);
+}
+
+input,
+select,
+textarea {
   font-family: inherit;
 }

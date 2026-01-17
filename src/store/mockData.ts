@@ -1,4 +1,68 @@
-export const tickets = [
-  { id: 1, title: "Erro na tela de login", status: "open" },
-  { id: 2, title: "Configurar SCSS", status: "closed" },
+import { Ticket } from "@/types/ticket"
+
+export const tickets: Ticket[] = [
+  {
+    id: 1,
+    title: "Erro na tela de login",
+    status: "open",
+    priority: "high",
+    category: "bug",
+    createdAt: "2024-01-15T10:00:00Z",
+  },
+  {
+    id: 2,
+    title: "Configurar SCSS",
+    status: "closed",
+    priority: "low",
+    category: "feature",
+    createdAt: "2024-01-16T14:30:00Z",
+  },
+  {
+    id: 3,
+    title: "Dúvida na fatura",
+    status: "open",
+    priority: "medium",
+    category: "billing",
+    createdAt: "2024-01-16T15:00:00Z",
+  },
+  {
+    id: 4,
+    title: "Erro ao exportar PDF",
+    status: "in_progress",
+    priority: "high",
+    category: "bug",
+    createdAt: "2024-01-17T09:00:00Z",
+  },
+  {
+    id: 5,
+    title: "Melhoria na Dashboard",
+    status: "open",
+    priority: "low",
+    category: "feature",
+    createdAt: "2024-01-18T11:20:00Z",
+  },
+  {
+    id: 6,
+    title: "Problema de conexão API",
+    status: "open",
+    priority: "high",
+    category: "other",
+    createdAt: "2024-01-19T13:45:00Z",
+  },
+  {
+    id: 7,
+    title: "Atualizar termos de uso",
+    status: "resolved",
+    priority: "medium",
+    category: "other",
+    createdAt: "2024-01-20T10:00:00Z",
+  },
+  {
+    id: 8,
+    title: "Botão de salvar não funciona",
+    status: "open",
+    priority: "high",
+    category: "bug",
+    createdAt: "2024-01-21T08:30:00Z",
+  },
 ]

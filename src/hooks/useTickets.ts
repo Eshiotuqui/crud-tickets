@@ -1,20 +1,13 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
+import { Ticket, PaginatedResponse } from "@/types/ticket"
 
-export interface Ticket {
-  id: number
-  title: string
-  status: "open" | "closed"
-}
-
-export const useTickets = () => {
-  return useSuspenseQuery<Ticket[]>({
-    queryKey: ["tickets"],
+export const useTickets = (page: number = 1, limit: number = 6) => {
+  return useSuspenseQuery<PaginatedResponse<Ticket>>({
+    queryKey: ["tickets", page, limit],
     queryFn: async () => {
-      const response = await fetch("/api/tickets")
-      if (!response.ok) throw new Error("Erro ao carregar os tickets")
+      const response = await fetch(`/api/tickets?page=${page}&limit=${limit}`)
+      if (!response.ok) throw new Error("Erro ao carregar tickets")
       return response.json()
     },
-
-    staleTime: 1000 * 60 * 5,
   })
 }
