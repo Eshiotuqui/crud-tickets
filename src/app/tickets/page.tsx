@@ -1,41 +1,31 @@
-"use client"
-
 import { Suspense } from "react"
-import { useTicketStore } from "@/store/useTicketStore"
 import styles from "./TicketsPage.module.scss"
-
-import Button from "@/components/ui/Button/Button"
 import TicketSkeleton from "@/components/shared/TicketSkeleton/Skeleton"
 import TicketFilters from "@/components/pages/TicketsList/TicketFilter/TicketsFilter"
-import TicketList from "@/components/pages/TicketsList/TicketsList"
-
+import TicketListServer from "@/components/pages/TicketsList/TicketListServer"
 import TicketCreateModal from "@/components/ui/Modal/TicketCreateModal/TicketCreateModal"
+import TicketHeaderActions from "@/components/pages/TicketsList/TicketHeader/TicketHeader"
 
 export default function TicketsPage() {
-  const setIsModalOpen = useTicketStore((state) => state.setIsModalOpen)
-
   return (
     <main className={styles.wrapper}>
       <div className="container">
-        <section className={styles.header} aria-labelledby="page-title">
+        <section className={styles.header}>
           <div className={styles.titleGroup}>
-            <h1 id="page-title">
+            <h1>
               Meus <span>Tickets</span>
             </h1>
             <p>Acompanhe o progresso dos seus chamados.</p>
           </div>
-
           <div className={styles.actions}>
-            <Button variant="primary" onClick={() => setIsModalOpen(true)}>
-              Abrir Novo Chamado
-            </Button>
+            <TicketHeaderActions />
           </div>
         </section>
 
         <TicketFilters />
 
-        <Suspense fallback={<TicketSkeleton length={3} />}>
-          <TicketList />
+        <Suspense fallback={<TicketSkeleton length={6} />}>
+          <TicketListServer />
         </Suspense>
       </div>
 
