@@ -1,52 +1,117 @@
-# Sistema de Gestão de Tickets TicketFlow - Next.js
+#  TicketFlow - Sistema de Gestão de Chamados
 
-Este projeto implementa uma listagem, criação, edição e exclusão de tickets utilizando as mais modernas funcionalidades do **Next.js (App Router)**. A arquitetura foi desenhada para oferecer uma experiência de alta performance, equilibrando o processamento no servidor com a interatividade no cliente.
+O **TicketFlow** é uma solução moderna para centralização e controle de tickets de suporte. O projeto nasceu da necessidade de um fluxo de trabalho ágil, onde a triagem de problemas (Bugs, Financeiro, Funcionalidades) precisa ser feita de forma intuitiva e performática. 
+
+Este sistema consiste em um **CRUD completo** (Create, Read, Update, Delete) que simula o dia a dia de uma equipe de suporte, permitindo desde a abertura de um chamado, edição de prioridades, até a visualização detalhada e o encerramento definitivo através de uma interface limpa e responsiva.
+
+---
+
+##  Funcionalidades Principais
+
+* **Gestão de Ciclo de Vida:** Criação, edição, visualização e exclusão de tickets.
+* **Filtros Inteligentes:** Busca textual e filtragem por status em tempo real.
+* **Ordenação Dinâmica:** Organização por data (mais recentes/antigos) e níveis de prioridade.
+* **Interface Consistente:** Sistema de modais padronizado e centralizado para uma experiência fluida.
+* **Performance Percebida:** Uso de esqueletos de carregamento (Skeletons) para evitar telas brancas.
+
+---
+
+## 🛠 Tecnologias Utilizadas
+
+O projeto utiliza as ferramentas mais robustas do ecossistema JavaScript atual:
+
+* **Framework:** [Next.js 14+](https://nextjs.org/) (App Router)
+* **Linguagem:** [TypeScript](https://www.typescriptlang.org/)
+* **Gerenciamento de Estado:** [Zustand](https://zustand-demo.pmnd.rs/) (Estado global leve e escalável)
+* **Data Fetching:** [TanStack Query (React Query)](https://tanstack.com/query/latest) (Cache e sincronização de dados)
+* **Estilização:** [SASS (CSS Modules)](https://sass-lang.com/)
+* **Validação:** [Zod](https://zod.dev/) + React Hook Form
+* **Ícones:** [Lucide React](https://lucide.dev/)
+
+---
+
+##  Primeiros Passos
+
+### Pré-requisitos
+
+Para rodar este projeto localmente, você precisará:
+* **Node.js:** Versão **20.x** ou superior (LTS recomendada).
+* **Gerenciador de pacotes:** NPM (incluso no Node).
+
+### Instalação
+
+1.  **Clone o repositório:**
+    ```bash
+    git clone [https://github.com/seu-usuario/ticketflow.git](https://github.com/seu-usuario/ticketflow.git)
+    cd ticketflow
+    ```
+
+2.  **Instale as dependências:**
+    ```bash
+    npm install
+    ```
+
+3.  **Configure as variáveis de ambiente:**
+    Crie um arquivo `.env.local` na raiz do projeto e adicione a URL da sua API:
+    ```env
+    NEXT_PUBLIC_API_URL=[http://localhost:3000](http://localhost:3000)
+    ```
+
+4.  **Inicie o servidor de desenvolvimento:**
+    ```bash
+    npm run dev
+    ```
+    Acesse `http://localhost:3000` no seu navegador.
+
+---
 
 ## Arquitetura de Renderização: SSR + Streaming
 
-A página de listagem tickets não utiliza uma renderização estática simples, mas sim um fluxo híbrido de **Server-Side Rendering (SSR)** com **Streaming de Dados**.
+A página de listagem de tickets utiliza um fluxo híbrido de **Server-Side Rendering (SSR)** com **Streaming de Dados**, aproveitando o poder do Next.js App Router.
 
-### 1. Porquê o uso de SSR (Server-Side Rendering)?
+
+
+### 1. Por que o uso de SSR (Server-Side Rendering)?
 
 A escolha de buscar os dados no servidor através do `TicketListServer` justifica-se por:
 
-- **Redução de Latência (Proximidade de Dados):** A chamada à API é feita diretamente do servidor. Como o servidor da aplicação está geralmente na mesma rede ou região que a API/Banco de Dados, o tempo de resposta é drasticamente menor do que se partisse do navegador do utilizador (3G/4G/Wi-Fi).
-- **Segurança e Abstração:** Lógicas sensíveis de fetch e possíveis tokens de autenticação ficam protegidos no ambiente do servidor, não sendo expostos ao browser.
-- **Hidratação Eficiente:** Ao enviar o `initialData` pronto para o componente de cliente, o React "hidrata" a interface instantaneamente, sem que o utilizador tenha de esperar por um segundo carregamento após a página abrir.
+* **Redução de Latência:** A chamada à API é feita diretamente do servidor. Como o servidor da aplicação está geralmente na mesma rede ou região que a API, o tempo de resposta é menor que via browser.
+* **Segurança:** Lógicas de fetch e tokens de autenticação ficam protegidos no ambiente do servidor, sem exposição ao cliente.
+* **Hidratação Eficiente:** O utilizador recebe o `initialData` pronto para o componente de cliente, permitindo que o React "hidrate" a interface instantaneamente.
 
 ### 2. O Papel do Streaming & Suspense
 
-Utilizamos o componente `<Suspense>` com um `TicketSkeleton` para otimizar a **Performance Percebida**:
+Utilizamos o componente `<Suspense>` com um `TicketSkeleton` para otimizar a experiência do usuário:
 
-- **Feedback Imediato:** O utilizador recebe o layout da página (header, filtros e containers) no primeiro milissegundo.
-- **Carregamento Progressivo:** Em vez de mostrar uma tela branca enquanto a API responde, o sistema exibe um estado de carregamento elegante. Assim que os dados chegam, o servidor faz o "stream" do conteúdo final para substituir o esqueleto.
+* **Feedback Imediato:** O utilizador recebe o layout da página (header, filtros) no primeiro milissegundo.
+* **Carregamento Progressivo:** O servidor faz o "stream" do conteúdo final assim que os dados chegam, substituindo o esqueleto de forma suave e automática.
 
-### 3. Impacto no SEO (Search Engine Optimization)
+### 3. Impacto no SEO
 
-Mesmo sendo uma área de gestão, a renderização no servidor é vital para o SEO:
-
-- **Indexação de Conteúdo:** Ao contrário do CSR (Client-Side Rendering), onde o HTML chega vazio, com SSR o conteúdo dos tickets já está presente no código-fonte. Isso permite que motores de busca indexem a informação sem depender da execução de JavaScript.
-- **Core Web Vitals:** Esta abordagem melhora o **LCP (Largest Contentful Paint)** e reduz o **CLS (Cumulative Layout Shift)**, métricas que o Google utiliza como fator de ranking para classificar a qualidade e velocidade do site.
-- **Social Crawlers:** Links partilhados em redes sociais ou ferramentas de comunicação (Slack/WhatsApp) conseguem ler as meta-tags e o conteúdo para gerar previews (cards) ricos.
+* **Indexação de Conteúdo:** O conteúdo dos tickets já está presente no código-fonte enviado pelo servidor, garantindo que motores de busca indexem a informação sem depender da execução de JavaScript.
+* **Core Web Vitals:** Melhora significativamente o **LCP** (Largest Contentful Paint) e reduz o **CLS** (Cumulative Layout Shift).
 
 ---
 
 ##  Divisão de Responsabilidades
 
-| Componente         | Camada | Função                                                           |
-| :----------------- | :----- | :--------------------------------------------------------------- |
-| `TicketsPage`      | Server | Define a estrutura e o limite do Suspense.                       |
-| `TicketListServer` | Server | Realiza o fetch de dados assíncrono (SSR).                       |
-| `TicketList`       | Client | Gere estados de filtros, paginação e interações (modais/delete). |
+| Componente | Camada | Função |
+| :--- | :--- | :--- |
+| `TicketsPage` | Server | Define a estrutura da página e o limite do Suspense. |
+| `TicketListServer` | Server | Realiza o fetch de dados assíncrono (SSR). |
+| `TicketList` | Client | Gere estados de filtros, paginação e interações de cards. |
+| `TicketModals` | Client | Centraliza os modais globais (Create, Edit, View) via Zustand. |
 
 ---
 
 ##  Como funciona o Fluxo de Dados
 
-1.  **Requisição:** O utilizador acede à rota de tickets.
-2.  **Renderização Inicial:** O servidor envia o HTML com o Skeleton.
-3.  **Data Fetching:** O `getTickets()` é executado no servidor.
+1.  **Requisição:** O utilizador acessa a rota de tickets.
+2.  **Renderização Inicial:** O servidor envia o HTML base com o Skeleton.
+3.  **Data Fetching:** O `getTickets()` é executado no servidor (Server Component).
 4.  **Streaming:** O servidor envia os dados finais e o componente `TicketList` "acorda" no cliente.
-5.  **Interação:** O utilizador filtra ou pagina os resultados localmente sem novas recargas de página, graças ao `useMemo` e ao estado local.
+5.  **Interação:** O utilizador filtra ou pagina os resultados localmente via `useMemo`, sem necessidade de novas recargas de página.
 
 ---
+
+Desenvolvido por [Enzo Shiotuqui].
