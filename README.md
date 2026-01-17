@@ -1,10 +1,10 @@
-# 🎫 Sistema de Gestão de Tickets - Next.js
+# Sistema de Gestão de Tickets TicketFlow - Next.js
 
-Este projeto implementa uma listagem de tickets utilizando as mais modernas funcionalidades do **Next.js (App Router)**. A arquitetura foi desenhada para oferecer uma experiência de alta performance, equilibrando o processamento no servidor com a interatividade no cliente.
+Este projeto implementa uma listagem, criação, edição e exclusão de tickets utilizando as mais modernas funcionalidades do **Next.js (App Router)**. A arquitetura foi desenhada para oferecer uma experiência de alta performance, equilibrando o processamento no servidor com a interatividade no cliente.
 
-## 🚀 Arquitetura de Renderização: SSR + Streaming
+## Arquitetura de Renderização: SSR + Streaming
 
-A página de tickets não utiliza uma renderização estática simples, mas sim um fluxo híbrido de **Server-Side Rendering (SSR)** com **Streaming de Dados**.
+A página de listagem tickets não utiliza uma renderização estática simples, mas sim um fluxo híbrido de **Server-Side Rendering (SSR)** com **Streaming de Dados**.
 
 ### 1. Porquê o uso de SSR (Server-Side Rendering)?
 
