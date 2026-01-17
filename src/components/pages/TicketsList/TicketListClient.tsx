@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo, useEffect } from "react"
-import { MoreVertical, Trash2 } from "lucide-react"
+import { MoreVertical, Trash2, Pencil } from "lucide-react"
 import { useTickets } from "@/hooks/useTickets"
 import { useTicketStore } from "@/store/useTicketStore"
 import { useDeleteTicket } from "@/hooks/useDeleteTicket"
@@ -18,8 +18,8 @@ interface TicketListProps {
 
 export default function TicketList({ initialData }: TicketListProps) {
   const { data: response } = useTickets(initialData)
-  const { searchQuery, filterStatus, sortBy } = useTicketStore()
   const { mutate: deleteTicket, isPending: isDeleting } = useDeleteTicket()
+  const { searchQuery, filterStatus, sortBy, setTicketToEdit, setTicketToView } = useTicketStore()
 
   const [currentPage, setCurrentPage] = useState(1)
   const [ticketToDelete, setTicketToDelete] = useState<Ticket | null>(null)
@@ -58,12 +58,6 @@ export default function TicketList({ initialData }: TicketListProps) {
     currentPage * itemsPerPage
   )
 
-  useEffect(() => {
-    if (currentPage > 1 && paginatedItems.length === 0 && filtered.length > 0) {
-      setCurrentPage(totalPages)
-    }
-  }, [paginatedItems.length, filtered.length, currentPage, totalPages])
-
   if (filtered.length === 0) {
     return (
       <section className={styles.empty}>
@@ -76,7 +70,12 @@ export default function TicketList({ initialData }: TicketListProps) {
     <section className={styles.ticketsSection}>
       <div className={styles.grid}>
         {paginatedItems.map((ticket: Ticket) => (
-          <article key={ticket.id} className={styles.card}>
+          <article
+            key={ticket.id}
+            className={styles.card}
+            onClick={() => setTicketToView(ticket)}
+            style={{ cursor: "pointer" }}
+          >
             <header className={styles.cardHeader}>
               <div className={styles.headerLeft}>
                 <span className={styles.categoryBadge}>{ticket.category || "Geral"}</span>
@@ -85,17 +84,27 @@ export default function TicketList({ initialData }: TicketListProps) {
                 </strong>
               </div>
 
-              <Popover
-                trigger={
-                  <button className={styles.actionBtn}>
-                    <MoreVertical size={20} />
-                  </button>
-                }
-              >
-                <button className={styles.deleteOption} onClick={() => setTicketToDelete(ticket)}>
-                  <Trash2 size={16} /> <span>Excluir</span>
-                </button>
-              </Popover>
+              <div onClick={(e) => e.stopPropagation()}>
+                <Popover
+                  trigger={
+                    <button className={styles.actionBtn} aria-label="Opções">
+                      <MoreVertical size={20} />
+                    </button>
+                  }
+                >
+                  <div className={styles.popoverMenu}>
+                    <button className={styles.menuItem} onClick={() => setTicketToEdit(ticket)}>
+                      <Pencil size={16} /> <span>Editar</span>
+                    </button>
+                    <button
+                      className={`${styles.menuItem} ${styles.delete}`}
+                      onClick={() => setTicketToDelete(ticket)}
+                    >
+                      <Trash2 size={16} /> <span>Excluir</span>
+                    </button>
+                  </div>
+                </Popover>
+              </div>
             </header>
 
             <h3 className={styles.cardTitle}>{ticket.title}</h3>
@@ -115,13 +124,11 @@ export default function TicketList({ initialData }: TicketListProps) {
       <ConfirmModal
         isOpen={!!ticketToDelete}
         title="Excluir Chamado"
-        description={`Remover "${ticketToDelete?.title}"?`}
+        description={`Tem certeza que deseja remover o ticket "${ticketToDelete?.title}"?`}
         onClose={() => setTicketToDelete(null)}
         onConfirm={() => {
           if (ticketToDelete) {
-            deleteTicket(ticketToDelete.id, {
-              onSuccess: () => setTicketToDelete(null),
-            })
+            deleteTicket(ticketToDelete.id, { onSuccess: () => setTicketToDelete(null) })
           }
         }}
         isLoading={isDeleting}

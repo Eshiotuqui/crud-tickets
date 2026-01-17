@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { ticketSchema, TicketFormData } from "@/schemas/ticketSchema"
 import { useTicketStore } from "@/store/useTicketStore"
 import { useCreateTicket } from "@/hooks/useCreateTicket"
+
 import { useToastStore } from "@/store/useToastStore"
 
 import Button from "@/components/ui/Button/Button"
@@ -15,11 +16,16 @@ import Select from "@/components/ui/Select/Select"
 import TextArea from "@/components/ui/Textarea/Textarea"
 
 import styles from "./TicketCreateModal.module.scss"
+import { useUpdateTicket } from "@/hooks/useUpdateTicket"
 
-export default function TicketCreateModal() {
-  const { isModalOpen, setIsModalOpen } = useTicketStore()
-  const { mutate, isPending } = useCreateTicket()
+export default function TicketFormModal() {
+  const { isModalOpen, setIsModalOpen, ticketToEdit, setTicketToEdit } = useTicketStore()
+  const { mutate: createMutate, isPending: isCreating } = useCreateTicket()
+  const { mutate: updateMutate, isPending: isUpdating } = useUpdateTicket()
   const { addToast } = useToastStore()
+
+  const isEditing = !!ticketToEdit
+  const isPending = isCreating || isUpdating
 
   const modalRef = useRef<HTMLElement | null>(null)
   const previouslyFocusedElement = useRef<HTMLElement | null>(null)
@@ -32,46 +38,55 @@ export default function TicketCreateModal() {
     setError,
   } = useForm<TicketFormData>({
     resolver: zodResolver(ticketSchema),
-    defaultValues: {
-      priority: "low",
-      category: "other",
-      status: "open",
-    },
   })
 
   useEffect(() => {
+    if (isModalOpen) {
+      if (ticketToEdit) {
+        reset({
+          title: ticketToEdit.title,
+          email: ticketToEdit.email || "",
+          category: ticketToEdit.category as any,
+          priority: ticketToEdit.priority,
+          status: ticketToEdit.status,
+          description: ticketToEdit.description || "",
+        })
+      } else {
+        reset({
+          title: "",
+          email: "",
+          priority: "low",
+          category: "other",
+          status: "open",
+          description: "",
+        })
+      }
+    }
+  }, [isModalOpen, ticketToEdit, reset])
+
+  useEffect(() => {
     if (!isModalOpen) return
-
     previouslyFocusedElement.current = document.activeElement as HTMLElement | null
-
     const modal = modalRef.current
     if (!modal) return
-
     const focusableSelectors = [
       "a[href]",
       "button:not([disabled])",
       "textarea:not([disabled])",
       "input:not([disabled])",
       "select:not([disabled])",
-      '[tabindex]:not([tabindex="-1"])',
     ]
-
     const focusableElements = modal.querySelectorAll<HTMLElement>(focusableSelectors.join(","))
-
     focusableElements[0]?.focus()
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        event.preventDefault()
         setIsModalOpen(false)
         return
       }
-
       if (event.key !== "Tab") return
-
       const first = focusableElements[0]
       const last = focusableElements[focusableElements.length - 1]
-
       if (event.shiftKey) {
         if (document.activeElement === first) {
           event.preventDefault()
@@ -84,9 +99,7 @@ export default function TicketCreateModal() {
         }
       }
     }
-
     document.addEventListener("keydown", handleKeyDown)
-
     return () => {
       document.removeEventListener("keydown", handleKeyDown)
       previouslyFocusedElement.current?.focus()
@@ -96,17 +109,27 @@ export default function TicketCreateModal() {
   if (!isModalOpen) return null
 
   const onSubmit = (data: TicketFormData) => {
-    mutate(data, {
+    const mutation = isEditing ? updateMutate : createMutate
+    const payload = isEditing ? { ...data, id: ticketToEdit.id } : data
+
+    mutation(payload as any, {
       onSuccess: () => {
-        addToast("Ticket criado com sucesso!", "success")
+        addToast(
+          isEditing ? "Ticket atualizado com sucesso!" : "Ticket criado com sucesso!",
+          "success"
+        )
         setIsModalOpen(false)
+        setTicketToEdit(null)
         reset()
       },
       onError: (err: any) => {
-        addToast("Erro ao criar ticket.", "error")
+        const message = err?.error || "Erro ao processar solicitação."
+        addToast(message, "error")
+
         if (err?.errors) {
           Object.entries(err.errors).forEach(([key, value]) => {
             setError(key as keyof TicketFormData, {
+              type: "server",
               message: Array.isArray(value) ? value[0] : String(value),
             })
           })
@@ -126,32 +149,19 @@ export default function TicketCreateModal() {
         onClick={(e) => e.stopPropagation()}
       >
         <header className={styles.header}>
-          <h2 id="ticket-modal-title">Novo Chamado</h2>
-
-          <button
-            type="button"
-            className={styles.close}
-            aria-label="Fechar modal"
-            onClick={() => setIsModalOpen(false)}
-          >
+          <h2 id="ticket-modal-title">{isEditing ? "Editar Chamado" : "Novo Chamado"}</h2>
+          <button type="button" className={styles.close} onClick={() => setIsModalOpen(false)}>
             &times;
           </button>
         </header>
 
         <main className={styles.form}>
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
-            <Input
-              autoFocus
-              label="Título"
-              placeholder="Ex: [BUG] Erro no login"
-              error={errors.title?.message}
-              {...register("title")}
-            />
+            <Input autoFocus label="Título" error={errors.title?.message} {...register("title")} />
 
             <Input
               label="E-mail"
               type="email"
-              placeholder="seu@empresa.com"
               error={errors.email?.message}
               {...register("email")}
             />
@@ -159,7 +169,6 @@ export default function TicketCreateModal() {
             <div className={styles.row}>
               <Select
                 label="Categoria"
-                error={errors.category?.message}
                 options={[
                   { value: "bug", label: "Bug" },
                   { value: "billing", label: "Financeiro" },
@@ -168,10 +177,8 @@ export default function TicketCreateModal() {
                 ]}
                 {...register("category")}
               />
-
               <Select
                 label="Prioridade"
-                error={errors.priority?.message}
                 options={[
                   { value: "low", label: "Baixa" },
                   { value: "medium", label: "Média" },
@@ -183,7 +190,6 @@ export default function TicketCreateModal() {
 
             <Select
               label="Status"
-              error={errors.status?.message}
               options={[
                 { value: "open", label: "Aberto" },
                 { value: "in_progress", label: "Em Progresso" },
@@ -195,30 +201,16 @@ export default function TicketCreateModal() {
 
             <TextArea
               label="Descrição"
-              placeholder="Descreva o problema em detalhes..."
               error={errors.description?.message}
               {...register("description")}
             />
 
-            <Input
-              label="URL do Anexo (Opcional)"
-              placeholder="https://..."
-              error={errors.attachmentUrl?.message}
-              {...register("attachmentUrl")}
-            />
-
             <footer className={styles.actions}>
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => setIsModalOpen(false)}
-                disabled={isPending}
-              >
+              <Button type="button" variant="ghost" onClick={() => setIsModalOpen(false)}>
                 Cancelar
               </Button>
-
               <Button type="submit" variant="primary" isLoading={isPending}>
-                Criar Ticket
+                {isEditing ? "Salvar Alterações" : "Criar Ticket"}
               </Button>
             </footer>
           </form>

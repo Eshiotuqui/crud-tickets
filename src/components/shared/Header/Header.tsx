@@ -39,11 +39,6 @@ export default function Header() {
               Meus Tickets
             </Link>
           </nav>
-
-          <div className={styles.actions}>
-            <Button variant="ghost">Entrar</Button>
-            <Button variant="primary">Criar Conta</Button>
-          </div>
         </div>
       </div>
     </header>
